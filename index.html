@@ -1,0 +1,960 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DataCore - Controla tus datos. Crea tu manera de trabajar.</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --neon-cyan: #00f0ff;
+            --neon-purple: #b026ff;
+            --neon-pink: #ff00d4;
+            --neon-blue: #0066ff;
+            --dark-bg: #0a0a0f;
+            --dark-surface: #141420;
+            --dark-card: #1a1a2e;
+            --text-primary: #ffffff;
+            --text-secondary: #a0a0b0;
+        }
+
+        body {
+            font-family: 'Rajdhani', sans-serif;
+            line-height: 1.7;
+            color: var(--text-primary);
+            background: var(--dark-bg);
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Animated Background */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 50%, rgba(0, 240, 255, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(176, 38, 255, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 40% 20%, rgba(255, 0, 212, 0.08) 0%, transparent 50%);
+            z-index: 0;
+            animation: pulse 8s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 0.5; }
+            50% { opacity: 1; }
+        }
+
+        /* Grid Pattern */
+        body::after {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(rgba(0, 240, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 240, 255, 0.03) 1px, transparent 1px);
+            background-size: 50px 50px;
+            z-index: 0;
+            animation: gridMove 20s linear infinite;
+        }
+
+        @keyframes gridMove {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(50px, 50px); }
+        }
+
+        .container {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 0 24px;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Header */
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: rgba(26, 26, 46, 0.7);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(0, 240, 255, 0.2);
+            z-index: 1000;
+            padding: 20px 0;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            text-decoration: none;
+            position: relative;
+        }
+
+        .logo {
+            height: 50px;
+            width: auto;
+            filter: drop-shadow(0 0 10px rgba(0, 240, 255, 0.5));
+            animation: logoGlow 3s ease-in-out infinite;
+        }
+
+        @keyframes logoGlow {
+            0%, 100% { filter: drop-shadow(0 0 10px rgba(0, 240, 255, 0.5)); }
+            50% { filter: drop-shadow(0 0 20px rgba(0, 240, 255, 0.8)); }
+        }
+
+        .logo-text {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 26px;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--neon-cyan) 0%, var(--neon-purple) 50%, var(--neon-pink) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-shadow: 0 0 30px rgba(0, 240, 255, 0.5);
+            letter-spacing: 2px;
+            animation: textShimmer 3s ease-in-out infinite;
+        }
+
+        @keyframes textShimmer {
+            0%, 100% { filter: brightness(1); }
+            50% { filter: brightness(1.3); }
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 40px;
+        }
+
+        .nav-link {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 16px;
+            transition: all 0.3s;
+            position: relative;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .nav-link::before {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(90deg, var(--neon-cyan), var(--neon-purple));
+            box-shadow: 0 0 10px var(--neon-cyan);
+            transition: width 0.3s;
+        }
+
+        .nav-link:hover {
+            color: var(--text-primary);
+        }
+
+        .nav-link:hover::before {
+            width: 100%;
+        }
+
+        .btn {
+            padding: 14px 32px;
+            border: none;
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            font-family: 'Rajdhani', sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .btn:hover::before {
+            left: 100%;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--neon-cyan) 0%, var(--neon-blue) 100%);
+            color: var(--dark-bg);
+            box-shadow: 0 0 20px rgba(0, 240, 255, 0.4), 0 4px 15px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(0, 240, 255, 0.5);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 0 30px rgba(0, 240, 255, 0.6), 0 6px 20px rgba(0, 0, 0, 0.4);
+        }
+
+        .btn-download {
+            background: linear-gradient(135deg, var(--neon-purple) 0%, var(--neon-pink) 100%);
+            color: white;
+            font-size: 16px;
+            padding: 14px 32px;
+            box-shadow: 0 0 20px rgba(176, 38, 255, 0.4), 0 4px 15px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(176, 38, 255, 0.5);
+        }
+
+        .btn-download:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 0 30px rgba(176, 38, 255, 0.6), 0 6px 20px rgba(0, 0, 0, 0.4);
+        }
+
+        /* Hero Section */
+        .hero {
+            margin-top: 90px;
+            padding: 150px 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(0, 240, 255, 0.15) 0%, transparent 70%);
+            border-radius: 50%;
+            animation: pulseCircle 4s ease-in-out infinite;
+        }
+
+        @keyframes pulseCircle {
+            0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 0.5; }
+            50% { transform: translate(-50%, -50%) scale(1.2); opacity: 0.8; }
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 1;
+            text-align: center;
+        }
+
+        .hero h1 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 90px;
+            font-weight: 900;
+            margin-bottom: 30px;
+            letter-spacing: 4px;
+            background: linear-gradient(135deg, var(--neon-cyan) 0%, var(--neon-purple) 50%, var(--neon-pink) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-shadow: 0 0 40px rgba(0, 240, 255, 0.5);
+            animation: float 6s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+
+        .hero .tagline {
+            font-size: 28px;
+            font-weight: 400;
+            margin-bottom: 60px;
+            color: var(--text-secondary);
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            animation: fadeInUp 1s ease-out;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 24px;
+            justify-content: center;
+            flex-wrap: wrap;
+            animation: fadeInUp 1s ease-out 0.3s backwards;
+        }
+
+        /* Sections */
+        section {
+            padding: 120px 0;
+            position: relative;
+        }
+
+        .section-header {
+            text-align: center;
+            max-width: 800px;
+            margin: 0 auto 100px;
+            position: relative;
+        }
+
+        section h2 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 56px;
+            font-weight: 700;
+            margin-bottom: 24px;
+            background: linear-gradient(135deg, var(--neon-cyan) 0%, var(--neon-purple) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            position: relative;
+        }
+
+        section h2::after {
+            content: '';
+            position: absolute;
+            bottom: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 4px;
+            background: linear-gradient(90deg, var(--neon-cyan), var(--neon-purple));
+            box-shadow: 0 0 10px var(--neon-cyan);
+        }
+
+        section .subtitle {
+            font-size: 20px;
+            color: var(--text-secondary);
+            line-height: 1.8;
+            font-weight: 400;
+            letter-spacing: 1px;
+            margin-top: 40px;
+        }
+
+        /* Content Sections */
+        .content-section {
+            background: transparent;
+        }
+
+        /* Glass Cards */
+        .glass-card {
+            background: rgba(26, 26, 46, 0.6);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(0, 240, 255, 0.2);
+            border-radius: 20px;
+            padding: 50px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3), inset 0 0 30px rgba(0, 240, 255, 0.05);
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .glass-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(0, 240, 255, 0.1), transparent);
+            transform: rotate(45deg);
+            transition: all 0.6s;
+        }
+
+        .glass-card:hover::before {
+            animation: shine 1.5s;
+        }
+
+        @keyframes shine {
+            0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+            100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+        }
+
+        .glass-card:hover {
+            transform: translateY(-10px);
+            border-color: rgba(0, 240, 255, 0.5);
+            box-shadow: 0 12px 40px rgba(0, 240, 255, 0.2), 0 0 60px rgba(0, 240, 255, 0.1), inset 0 0 30px rgba(0, 240, 255, 0.1);
+        }
+
+        /* Values Grid */
+        .values-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 40px;
+            margin-top: 80px;
+        }
+
+        .value-card {
+            background: rgba(26, 26, 46, 0.6);
+            backdrop-filter: blur(20px);
+            padding: 45px;
+            border-radius: 20px;
+            border: 1px solid rgba(0, 240, 255, 0.2);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3), inset 0 0 30px rgba(0, 240, 255, 0.05);
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .value-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, var(--neon-cyan), var(--neon-purple), var(--neon-pink));
+            transform: scaleX(0);
+            transition: transform 0.4s;
+        }
+
+        .value-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .value-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            border-color: rgba(0, 240, 255, 0.5);
+            box-shadow: 0 12px 40px rgba(0, 240, 255, 0.2), 0 0 60px rgba(0, 240, 255, 0.1);
+        }
+
+        .value-card h4 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 26px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            color: var(--neon-cyan);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .value-card p {
+            font-size: 17px;
+            color: var(--text-secondary);
+            line-height: 1.8;
+            margin: 0;
+        }
+
+        /* Policies Grid */
+        .policies-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
+            gap: 40px;
+            margin-top: 80px;
+        }
+
+        .policy-card {
+            background: rgba(26, 26, 46, 0.6);
+            backdrop-filter: blur(20px);
+            padding: 45px;
+            border-radius: 20px;
+            border-left: 4px solid var(--neon-cyan);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3), inset 0 0 30px rgba(0, 240, 255, 0.05);
+            transition: all 0.4s ease;
+            position: relative;
+        }
+
+        .policy-card:hover {
+            transform: translateX(10px);
+            border-left-color: var(--neon-purple);
+            box-shadow: 0 12px 40px rgba(176, 38, 255, 0.2), 0 0 60px rgba(176, 38, 255, 0.1);
+        }
+
+        .policy-card h4 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            color: var(--neon-cyan);
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+        }
+
+        .policy-card p {
+            font-size: 17px;
+            color: var(--text-secondary);
+            line-height: 1.8;
+            margin: 0;
+        }
+
+        /* Antecedents Grid */
+        .antecedents-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+            gap: 50px;
+            margin-top: 80px;
+        }
+
+        .antecedent-card {
+            background: rgba(26, 26, 46, 0.6);
+            backdrop-filter: blur(20px);
+            padding: 55px;
+            border-radius: 25px;
+            border: 2px solid rgba(0, 240, 255, 0.2);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3), inset 0 0 40px rgba(0, 240, 255, 0.05);
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .antecedent-card::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: linear-gradient(45deg, var(--neon-cyan), var(--neon-purple), var(--neon-pink), var(--neon-cyan));
+            border-radius: 25px;
+            z-index: -1;
+            opacity: 0;
+            transition: opacity 0.4s;
+        }
+
+        .antecedent-card:hover::before {
+            opacity: 0.5;
+            animation: borderRotate 3s linear infinite;
+        }
+
+        @keyframes borderRotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .antecedent-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 16px 50px rgba(0, 240, 255, 0.3), 0 0 80px rgba(0, 240, 255, 0.15);
+        }
+
+        .antecedent-card h4 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 32px;
+            font-weight: 800;
+            margin-bottom: 25px;
+            background: linear-gradient(135deg, var(--neon-cyan) 0%, var(--neon-purple) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .antecedent-card p {
+            font-size: 18px;
+            color: var(--text-secondary);
+            line-height: 1.9;
+            margin-bottom: 20px;
+        }
+
+        .antecedent-card p:last-child {
+            margin-bottom: 0;
+        }
+
+        /* Footer */
+        footer {
+            background: linear-gradient(180deg, rgba(10, 10, 15, 0.9) 0%, rgba(20, 20, 32, 0.95) 100%);
+            backdrop-filter: blur(20px);
+            border-top: 2px solid rgba(0, 240, 255, 0.2);
+            padding: 100px 0 50px;
+            position: relative;
+        }
+
+        .footer-content {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        .footer-top {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr;
+            gap: 60px;
+            margin-bottom: 60px;
+        }
+
+        .footer-brand {
+            max-width: 400px;
+        }
+
+        .footer-brand img {
+            height: 50px;
+            margin-bottom: 20px;
+            filter: drop-shadow(0 0 10px rgba(0, 240, 255, 0.5));
+        }
+
+        .footer-brand h3 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            background: linear-gradient(135deg, var(--neon-cyan) 0%, var(--neon-purple) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: 2px;
+        }
+
+        .footer-brand p {
+            font-size: 16px;
+            color: var(--text-secondary);
+            line-height: 1.8;
+        }
+
+        .footer-column h4 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 30px;
+            color: var(--neon-cyan);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .footer-column ul {
+            list-style: none;
+        }
+
+        .footer-column ul li {
+            margin-bottom: 16px;
+        }
+
+        .footer-column a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 16px;
+            transition: all 0.3s;
+            display: inline-block;
+            position: relative;
+        }
+
+        .footer-column a::before {
+            content: '▶';
+            position: absolute;
+            left: -20px;
+            opacity: 0;
+            color: var(--neon-cyan);
+            transition: all 0.3s;
+        }
+
+        .footer-column a:hover {
+            color: var(--neon-cyan);
+            transform: translateX(10px);
+        }
+
+        .footer-column a:hover::before {
+            opacity: 1;
+            left: -15px;
+        }
+
+        .footer-bottom {
+            border-top: 1px solid rgba(0, 240, 255, 0.2);
+            padding-top: 40px;
+            text-align: center;
+        }
+
+        .footer-bottom p {
+            font-size: 15px;
+            color: var(--text-secondary);
+            letter-spacing: 1px;
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .footer-top {
+                grid-template-columns: 1fr 1fr;
+                gap: 50px;
+            }
+
+            .hero h1 {
+                font-size: 70px;
+            }
+
+            section h2 {
+                font-size: 48px;
+            }
+
+            .antecedents-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .hero {
+                padding: 100px 0;
+                margin-top: 80px;
+            }
+
+            .hero h1 {
+                font-size: 50px;
+                letter-spacing: 2px;
+            }
+
+            .hero .tagline {
+                font-size: 22px;
+            }
+
+            section {
+                padding: 80px 0;
+            }
+
+            section h2 {
+                font-size: 36px;
+                letter-spacing: 2px;
+            }
+
+            .nav-links {
+                gap: 20px;
+            }
+
+            .nav-link {
+                font-size: 14px;
+            }
+
+            .btn {
+                padding: 12px 24px;
+                font-size: 14px;
+            }
+
+            .footer-top {
+                grid-template-columns: 1fr;
+                gap: 40px;
+            }
+
+            .values-grid,
+            .policies-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <nav class="container">
+            <a href="#inicio" class="logo-container">
+                <img src="logo.png" alt="DataCore Logo" class="logo">
+                <span class="logo-text">DataCore</span>
+            </a>
+            <div class="nav-links">
+                <a href="#inicio" class="nav-link">Inicio</a>
+                <a href="#quienes-somos" class="nav-link">Acerca de</a>
+                <a href="#valores" class="nav-link">Valores</a>
+                <a href="https://datacoreemely.netlify.app/login" class="btn btn-primary">Iniciar Sesión</a>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero" id="inicio">
+        <div class="container">
+            <div class="hero-content">
+                <h1>DataCore</h1>
+                <p class="tagline">Controla tus datos. Crea tu manera de trabajar.</p>
+                <div class="hero-buttons">
+                    <a href="https://datacoreemely.netlify.app/login" class="btn btn-primary">Iniciar Sesión</a>
+                    <a href="app/app-debug.apk" download="DataCore.apk" class="btn btn-download">📱 Descargar App</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Quiénes Somos -->
+    <section class="content-section" id="quienes-somos">
+        <div class="container">
+            <div class="section-header">
+                <h2>Quiénes Somos</h2>
+                <div class="glass-card">
+                    <p style="font-size: 20px; color: var(--text-secondary); line-height: 1.9; letter-spacing: 1px;">
+                        Trabajamos para ayudar a las PyMEs a tomar el control de sus datos y crear su propia manera de trabajar, con herramientas intuitivas y fáciles de usar.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Misión -->
+    <section class="content-section" id="mision">
+        <div class="container">
+            <div class="section-header">
+                <h2>Misión</h2>
+                <div class="glass-card">
+                    <p style="font-size: 20px; color: var(--text-secondary); line-height: 1.9; letter-spacing: 1px;">
+                        Transformar la forma en que las PyMEs trabajan, brindándoles herramientas que les permitan crear, adaptar y controlar sus propios flujos de datos, impulsando su crecimiento y autonomía digital.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Visión -->
+    <section class="content-section" id="vision">
+        <div class="container">
+            <div class="section-header">
+                <h2>Visión</h2>
+                <div class="glass-card">
+                    <p style="font-size: 20px; color: var(--text-secondary); line-height: 1.9; letter-spacing: 1px;">
+                        Ser una empresa líder en gestión de datos mundial, donde cada empresa pueda crear, personalizar y mejorar continuamente sus procesos con eficiencia, seguridad y precisión.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Valores -->
+    <section class="content-section" id="valores">
+        <div class="container">
+            <div class="section-header">
+                <h2>Nuestros Valores</h2>
+                <p class="subtitle">Los principios que guían nuestro trabajo y compromiso con nuestros clientes</p>
+            </div>
+            <div class="values-grid">
+                <div class="value-card">
+                    <h4>Confianza</h4>
+                    <p>Nos comprometemos con la seguridad y la integridad de los datos, garantizando la protección y confiabilidad de la información de nuestros clientes.</p>
+                </div>
+                <div class="value-card">
+                    <h4>Flexibilidad</h4>
+                    <p>Diseñamos soluciones que se adaptan a cada negocio, permitiendo personalización y ajuste según sus necesidades específicas y evolución.</p>
+                </div>
+                <div class="value-card">
+                    <h4>Autonomía</h4>
+                    <p>Ayudamos a las PyMEs a tomar el control de sus datos y procesos, para que trabajen según su propia manera de hacer las cosas.</p>
+                </div>
+                <div class="value-card">
+                    <h4>Compromiso con el crecimiento</h4>
+                    <p>Buscamos que nuestras soluciones impulsen la eficiencia, productividad y éxito de las PyMEs, acompañándolas en su evolución digital.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Políticas -->
+    <section class="content-section" id="politicas">
+        <div class="container">
+            <div class="section-header">
+                <h2>Nuestras Políticas</h2>
+                <p class="subtitle">Compromisos que guían nuestras prácticas y servicios</p>
+            </div>
+            <div class="policies-grid">
+                <div class="policy-card">
+                    <h4>Política de Privacidad y Manejo de Datos</h4>
+                    <p>Nos comprometemos a proteger la información de nuestros clientes y usuarios, garantizando confidencialidad, seguridad y uso responsable de los datos.</p>
+                </div>
+                <div class="policy-card">
+                    <h4>Política de Calidad y Mejora Continua</h4>
+                    <p>Todos nuestros productos y servicios se desarrollan bajo estándares de alta calidad, buscando la mejora constante para satisfacer las necesidades de nuestros clientes.</p>
+                </div>
+                <div class="policy-card">
+                    <h4>Política de Accesibilidad</h4>
+                    <p>Diseñamos nuestras soluciones para que sean intuitivas y fáciles de usar, permitiendo que cualquier usuario pueda gestionar sus datos y procesos sin dificultades.</p>
+                </div>
+                <div class="policy-card">
+                    <h4>Política de Atención al Cliente</h4>
+                    <p>Brindamos soporte claro, eficiente y oportuno, garantizando que nuestros clientes reciban ayuda y orientación cuando lo necesiten.</p>
+                </div>
+                <div class="policy-card">
+                    <h4>Política de Sostenibilidad Digital</h4>
+                    <p>Promovemos el uso eficiente de los recursos tecnológicos y la adopción de prácticas responsables que minimicen el impacto ambiental y optimicen la infraestructura digital.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Antecedentes -->
+    <section class="content-section" id="antecedentes">
+        <div class="container">
+            <div class="section-header">
+                <h2>Antecedentes</h2>
+                <p class="subtitle">Referencias del mercado que inspiran nuestras soluciones</p>
+            </div>
+            <div class="antecedents-grid">
+                <div class="antecedent-card">
+                    <h4>QuickBooks</h4>
+                    <p>Es una herramienta enfocada en contabilidad, facturación, ventas y control de inventario, especialmente para pequeñas empresas.</p>
+                    <p>Permite registrar transacciones, emitir facturas, gestionar productos y generar reportes financieros, integrando ventas e inventario en un solo lugar.</p>
+                </div>
+                <div class="antecedent-card">
+                    <h4>Salesforce</h4>
+                    <p>Es un CRM (Customer Relationship Management), es decir, un sistema diseñado para gestionar y organizar la relación con los clientes.</p>
+                    <p>Permite a las empresas almacenar información de contactos, hacer seguimiento de oportunidades de venta, automatizar tareas y analizar datos para mejorar la atención y las ventas.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-top">
+                <div class="footer-brand">
+                    <img src="logo.png" alt="DataCore Logo">
+                    <h3>DataCore</h3>
+                    <p>Controla tus datos. Crea tu manera de trabajar. Transformamos la gestión de datos para PyMEs con herramientas intuitivas y personalizables.</p>
+                </div>
+                <div class="footer-column">
+                    <h4>Empresa</h4>
+                    <ul>
+                        <li><a href="#quienes-somos">Quiénes Somos</a></li>
+                        <li><a href="#mision">Misión</a></li>
+                        <li><a href="#vision">Visión</a></li>
+                        <li><a href="#valores">Valores</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h4>Información</h4>
+                    <ul>
+                        <li><a href="#politicas">Políticas</a></li>
+                        <li><a href="#antecedentes">Antecedentes</a></li>
+                        <li><a href="app/app-debug.apk" download="DataCore.apk">Descargar App</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h4>Cuenta</h4>
+                    <ul>
+                        <li><a href="https://datacoreemely.netlify.app/login">Iniciar Sesión</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>© 2024 DataCore. Todos los derechos reservados.</p>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>
